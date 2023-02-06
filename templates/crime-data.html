@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- header footer script -->
+    <script type="module" src="{{url_for('static',filename='javascript/header-footer.js')}}"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" constent="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crime Data Analysis</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/neumorphism.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
+    <script src="{{url_for('static',filename='javascript/index.js')}}"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js" type="text/javascript"></script> 
+    <script src="http://www.skulpt.org/js/skulpt.min.js" type="text/javascript"></script> 
+    <script src="http://www.skulpt.org/js/skulpt-stdlib.js" type="text/javascript"></script> 
+
+
+    <link href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css'>
+    <script src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js'></script>
+    
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+    
+    
+    <script src="https://kit.fontawesome.com/7bdcd846e8.js" crossorigin="anonymous"></script>
+    
+    <script src="https://cdn.lordicon.com/libs/frhvbuzj/lord-icon-2.0.2.js"></script>
+    <!-- live time -->
+    <script>
+    function startTime() {
+        var time = new Date();
+        document.getElementById('txt').innerHTML = time.toLocaleString('en-US', {
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true
+      });
+    }
+    </script>    
+
+
+<script>
+  function datafillfun(n) {
+
+      //console.log("testing run...");
+      var s1 = "{{url_for('static',filename='data/pincodes.json')}}";
+      var s = "{{url_for('static',filename='data/districtjsondata.json')}}";
+      //var s2 = "{{url_for('static',filename='data/rankdataset.json')}}";
+
+
+      document.getElementById('myGrid1').innerHTML = '';
+
+      inppincode = document.getElementById('pincode').value;
+
+      //console.log("testing");
+      console.log(inppincode, "pincode")
+
+      // function for reading json file
+      function readTextFile(file, callback) {
+          var rawFile = new XMLHttpRequest();
+          rawFile.overrideMimeType("application/json");
+          rawFile.open("GET", file, true);
+          rawFile.onreadystatechange = function () {
+              if (rawFile.readyState === 4 && rawFile.status == "200") {
+                  callback(rawFile.responseText);
+              }
+          }
+          rawFile.send(null);
+      }
+
+      //Pincode
+      readTextFile(s1, function (text) {
+          var data1 = JSON.parse(text);
+          console.log(data1);
+
+      //Rank
+      //readTextFile(s2, function (text) {
+        //  var data2 = JSON.parse(text);
+        //  console.log(data2);
+        
+      //Crimedata      
+      readTextFile(s, function (text) {
+          var data = JSON.parse(text);
+          console.log(data);
+              
+          var district = "mumbai";
+          var taluka = "mumbai";
+
+              //Pincode
+              for (i = 0; i < data1.length; i++) {
+                  if (data1[i].pincode == inppincode || data1[i].districtName.toLowerCase() == inppincode.toLowerCase()) {
+                      district = data1[i].districtName;
+                      taluka = data1[i].taluk;
+                      break;
+                  }
+              }
+
+              //Rank
+              /*var rank='N/A'
+              for (i = 0; i < data2.length; i++) {
+                  if (data2[i].DISTRICT.toLowerCase() == district.toLowerCase()) {
+                      rank=data2[i].level_0;
+                      break;
+                  }
+              }
+              console.log("rank of district",rank,district);
+              */
+
+              if (district == "none") {
+                  alert("Please check the District name/Pincode");
+              }
+              else {
+                  console.log(district, "district");
+              }
+                    //Crime data table
+                    var tableBody = '<h5></h5><table class="table table-hover" ><tr><th class="border-0" scope="col" id="state-table-heading">DISTRICT</th>';
+
+
+                    tableBody += '<th class="border-0" scope="col" id="total-table-heading">STATE_UT</th>';
+                    tableBody += '<th class="border-0" scope="col" id="total-table-heading">YEAR</th>';
+                    tableBody += '<th class="border-0" scope="col" id="total-table-heading">MURDER</th>';
+                    tableBody += '<th class="border-0" scope="col" id="total-table-heading">NEGLIGENCE</th>';
+                    tableBody += '<th class="border-0" scope="col" id="total-table-heading">HURT</th>';
+                    tableBody += '<th class="border-0" scope="col" id="total-table-heading">ASSAULT_ON_WOMEN</th>';
+                    tableBody += '<th class="border-0" scope="col" id="total-table-heading">KIDNAPPING_AND_ABDUCTION</th>';
+                    tableBody += '<th class="border-0" scope="col" id="total-table-heading">HUMAN_TRAFFICKING</th>';
+                    tableBody += '<th class="border-0" scope="col" id="total-table-heading">RAPE</th>';
+                    tableBody += '<th class="border-0" scope="col" id="total-table-heading">OFFENCE_AGAINST_PUBLIC_TRANQUILITY</th>';
+                    tableBody += '<th class="border-0" scope="col" id="total-table-heading">OFFENCES_AGAINST_PROPERTY</th>';
+                    tableBody += '<th class="border-0" scope="col" id="total-table-heading">OFFENCES_RELATING_TO_DOCUMENTS_AND_PROPERTY_MARKS</th>';
+                    tableBody += '<th class="border-0" scope="col" id="total-table-heading">MISCELLANEOUS</th>';
+                    tableBody += '<th class="border-0" scope="col" id="total-table-heading">OTHERS</th>';
+                    tableBody += '<th class="border-0" scope="col" id="total-table-heading">TOTAL</th>';
+                    tableBody += '</tr>';
+                    arr = []
+
+                    var st ="MAHARASHTRA";
+
+                    //Crime data
+                    for (i = 0; i < data.length; i++) {
+                        if (data[i].District.toLowerCase() == district.toLowerCase()) {
+                            outdata = data[i];
+
+
+
+                            d = outdata;
+                            //st = d.STATE_UT;
+
+                            tableBody += '<tr><th scope="row">' + d.District;
+                            tableBody += '</th><td>' + st;
+                            tableBody += '</th><td>' + d.Year;
+                            tableBody += '</th><td>' + d.Murder;
+                            tableBody += '</th><td>' + d.Negligence;
+                            tableBody += '</th><td>' + d.Hurt;
+                            tableBody += '</th><td>' + d.ASSAULT_ON_WOMEN;
+                            tableBody += '</th><td>' + d.KIDNAPPING_AND_ABDUCTION;
+                            tableBody += '</th><td>' + d.HUMAN_TRAFFICKING;
+                            tableBody += '</th><td>' + d.Rape;
+                            tableBody += '</th><td>' + d.OFFENCE_AGAINST_PUBLIC_TRANQUILITY;
+                            tableBody += '</th><td>' + d.OFFENCES_AGAINST_PROPERTY;
+                            tableBody += '</th><td>' + d.OFFENCES_RELATING_TO_DOCUMENTS_AND_PROPERTY_MARKS;
+                            tableBody += '</th><td>' + d.Miscellaneous;
+                            tableBody += '</th><td>' + d.Others;
+                            tableBody += '</th><td>' + d.Total;
+                            tableBody += '</td></tr>';
+                        }
+                    }
+
+                    console.log(st, "state value");
+
+
+                    data.forEach(function (d) {
+
+                    }
+                    );
+                    tableBody += '<table>';
+
+                    // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
+
+                    var source = "https://www.google.com/maps/embed/v1/place?key=AIzaSyBMRV8kCEFnXyNHjpTevtrr_pb-kb7eqYY&q=" + String(district).split(" ").join("") + String(st).split(" ").join("");
+
+
+                    console.log(source);
+                    document.getElementById('districtmap').src = source;
+
+                    document.getElementById('state_info').innerHTML= st;
+                    document.getElementById('district_info').innerHTML= district;
+                    document.getElementById('taluka_info').innerHTML= taluka;
+
+                    var divContainer = document.getElementById("myGrid1");
+                    divContainer.innerHTML = tableBody;
+      
+                  });
+                  });
+      }
+          
+
+    </script>
+
+
+</head>
+
+<body onload="startTime();datafillfun();"; style=background-color:rgb(204,199,253); ></body>
+
+<my-header></my-header>
+
+  <script type="text/javascript">
+    $('.datepicker')[0] && $('.datepicker').each(function () {
+      $('.datepicker').datepicker({
+        disableTouchKeyboard: true,
+        autoclose: false
+      });
+    });
+  </script>
+
+<div class="row" style="display: flex;
+flex-wrap: nowrap;
+margin-right: -15px;
+margin-left: -15px;
+flex-direction: row;
+align-content: center;
+justify-content: space-around;
+align-items: center;">
+    <form action="#" class="w-75 pt-5" style="
+        display: flex;
+        flex-wrap: nowrap;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-evenly;
+        align-content: center;
+    ">
+        <div class="form-group mb-3 " style="display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            align-content: center;
+            justify-content: space-evenly;
+            align-items: center;">
+            <label for="pincode" style="
+                font-size: 22px;
+                font-weight: 600;
+                padding-right: 10px;
+                font-family: monospace;
+            ">Enter District Name/Pincode</label>
+            <input class="form-control shadow-none border-dark" id="pincode" aria-describedby="pincode" style="width: 400px;">
+        </div>
+        <button type="submit" class="btn btn-primary shadow-none border-dark" style="width: 160px;" onclick="datafillfun()">Search</button>
+    </form>
+    </div>
+    <div class="row">
+    
+    <div class="col-7 pl-5 pt-3">
+
+      <div id="table-panel" class="pr-2">
+          <div id="table">
+              <div class="card bg-primary border-dark " style="height:600px;">
+                  <div class="table-heading" style="
+              text-align: center;
+              font-weight: 400;
+              font-size: 20px;
+              font-weight: 600;
+              font-family: system-ui;
+              padding-top: 10px;"> Crime Data</div>
+                  <div class="card-body" id="myGrid1" style="overflow: scroll">
+
+                  </div>
+              </div>
+
+          </div>
+      </div>
+
+
+
+</div>
+
+
+        <div class="col-5 wiki-down pt-3 pr-5 pb-1">
+            <div id="map-panel" class="">
+                <div class="card bg-primary border-dark p-2">
+                    <!-- Content -->
+                    <div class="card-body border border-light rounded p-2 mb-2">
+                        <div style="width: 100%"><iframe width="100%" height="300" frameborder="0" scrolling="no"
+                                marginheight="0" marginwidth="0"
+                                src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=en&amp;q=mumbai+(Map)&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
+                                id="districtmap"></iframe><a href="https://www.maps.ie/draw-radius-circle-map/"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+<div class="row">
+  <div class="col-8 pt-3">
+    <div class="wiki-up">
+        <div id="wiki-panel">
+            <div class="card border-dark p-1">
+                <!-- Content -->
+                <div class="card-body rounded p-1 mb-2">
+                    <ul class="list-group list-group-flush price-list ">
+                        <li class="list-group-item border-primary pb-1"><span
+                                class="fas fa-university"></span>State: 
+                                <span id="state_info"></span>
+                        </li>
+                        <li class="list-group-item border-primary pb-1"><span class="fas fa-city"></span> 
+                            District:
+                            <span id="district_info"></span>
+                        </li>
+                        <li class="list-group-item border-primary pb-1"><span class="fas fa-building"></span>
+                            Taluka:
+                            <span id="taluka_info"></span>
+                        </li>
+                        <!-- <li class="list-group-item border-primary pb-1"><i class="fas fa-map-marker"></i> &nbsp
+                            Coordinates:
+                            <div id="coordinates_info"></div>
+                        </li> -->
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+</div>
+
+        </div>
+
+ 
+    
+    </div>
+  </div>
+</div>
+
+
+  
+
+
+<my-footer></my-footer>
+
+</body>
+
+</html>
