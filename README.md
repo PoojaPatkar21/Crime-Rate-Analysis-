@@ -9,4 +9,7 @@ Creating Models using machine learning
 Data Visualiztion: 
 1) Collecting administrative map data(Shapefile) 
 2) GIS techniques are used to plot the model analysis.
-3) Displaying statistical data using graphical format 
+3) Displaying statistical data using graphical format.
+
+CRA Website 
+
