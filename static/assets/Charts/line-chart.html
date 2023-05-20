@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>ZingSoft Demo</title>
+
+  <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+  <style>
+    html,
+    body {
+      height: 100%;
+      width: 100%;
+    }
+
+    #myChart {
+      height: 100%;
+      width: 100%;
+      min-height: 150px;
+    }
+
+    .zc-ref {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div id='myChart'><a class="zc-ref" href="https://www.zingchart.com/">Powered by ZingChart</a></div>
+  <script>
+    s = "/static/assets/data/datafinal2017-2020.json";
+
+
+    // function for reading json file
+    function readTextFile(file, callback) {
+      var rawFile = new XMLHttpRequest();
+      rawFile.overrideMimeType("application/json");
+      rawFile.open("GET", file, true);
+      rawFile.onreadystatechange = function () {
+        if (rawFile.readyState === 4 && rawFile.status == "200") {
+          callback(rawFile.responseText);
+        }
+      }
+      rawFile.send(null);
+    }
+
+    readTextFile(s, function (text) {
+      var data = JSON.parse(text);
+      console.log('data: ');
+      console.log(data);
+      var retrievedObject = localStorage.getItem('testObject2');
+
+      obj = JSON.parse(retrievedObject)
+      console.log('obj: ');
+      console.log(obj);
+      var district_arr = obj.state;
+
+      var year = obj.year;
+
+      var crime = obj.crime_type[obj.crime_type.length - 1];
+      var arr = []
+
+      var i;
+      for (i = 0; i < obj.state.length; i++) {
+      //  console.log(district_arr[i]);
+        for (j = 0; j < obj.year.length; j++) {
+        //  console.log(years_arr[j]);
+          var brr = []
+          for (k = 0; k < data.length; k++) {
+            if (data[k].Year == year[j] && data[k].District == obj.state[i]) {
+           //   console.log(data[k].MURDER, district_arr[i], years_arr[j], "test1");
+              brr.push(data[k].crime);
+             // console.log(brr, "brr");
+            }
+
+          }
+          if (brr.length != 0) {
+            arr.push(brr[0]);
+          }
+        }
+      }
+
+
+    //  console.log(arr);
+
+      console.log(arr);
+      var series_new = [];
+
+      c = 0
+      for (i = 0; i < obj.state.length; i++) {
+        var element = {}
+        //console.log(c, c + years_arr.length);
+        element.values = arr.slice(c, c + year.length);
+        element.data_days = year;
+        element.text = obj.state[i]+" Cases";
+        element.state = obj.state[i];
+        series_new.push(element);
+        c = c + year.length;
+      }
+
+      //console.log(series_new);
+
+
+      console.log("line-chart file running");
+
+      console.log(series_new);
+
+      ZC.LICENSE = ["569d52cefae586f634c54f86dc99e6a9", "b55b025e438fa8a98e32482b5f768ff5"];
+      var myConfig = {
+        "type": "line",
+        "utc": true,
+        "title": {
+          "text": "Crime Analytics",
+          "font-size": "24px",
+          "adjust-layout": true
+        },
+        "plotarea": {
+          "margin": "dynamic 45 60 dynamic",
+        },
+        "legend": {
+          "layout": "float",
+          "background-color": "none",
+          "border-width": 0,
+          "shadow": 0,
+          "align": "center",
+          "adjust-layout": true,
+          "toggle-action": "remove",
+          "item": {
+            "padding": 7,
+            "marginRight": 17,
+            "cursor": "hand"
+          }
+        },
+        
+        "crosshair-x": {
+          "line-color": "#efefef",
+          "plot-label": {
+            "border-radius": "5px",
+            "border-width": "1px",
+            "border-color": "#f6f7f8",
+            "padding": "10px",
+            "font-weight": "bold"
+          },
+          "scale-label": {
+            "font-color": "#000",
+            "background-color": "#f6f7f8",
+            "border-radius": "5px"
+          }
+        },
+        "tooltip": {
+          "visible": false
+        },
+        "plot": {
+          "highlight": true,
+          "tooltip-text": "%t views: %v<br>%k",
+          "shadow": 0,
+          "line-width": "2px",
+          "marker": {
+            "type": "circle",
+            "size": 3
+          },
+          "highlight-state": {
+            "line-width": 3
+          },
+          "animation": {
+            "effect": 1,
+            "sequence": 2,
+            "speed": 100,
+          }
+        },
+        "scaleY": {
+          label: {
+            text: "Crime Rate"
+          },
+        },
+        "scaleX": {
+          label: {
+            text: "Year"
+          },
+          labels: year
+        },
+        "series": series_new
+      };
+
+      zingchart.render({
+        id: 'myChart',
+        data: myConfig,
+        height: '100%',
+        width: '100%'
+      });
+
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>ZingSoft Demo</title>
+
+
+  <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+
+  <style>
+    html,
+    body,
+    #myChart {
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id='myChart'>
+  </div>
+
+
+  <script>
+    s = "/static/assets/data/datafinal2017-2020.json";
+
+    function readTextFile(file, callback) {
+      var rawFile = new XMLHttpRequest();
+      rawFile.overrideMimeType("application/json");
+      rawFile.open("GET", file, true);
+      rawFile.onreadystatechange = function () {
+        if (rawFile.readyState === 4 && rawFile.status == "200") {
+          callback(rawFile.responseText);
+        }
+      }
+      rawFile.send(null);
+    }
+
+    readTextFile(s, function (text) {
+      var data = JSON.parse(text);
+      console.log('data: ');
+      console.log(data);
+      var retrievedObject = localStorage.getItem('testObject2');
+      obj = JSON.parse(retrievedObject);
+      console.log('obj: ');
+      console.log(obj);
+
+      var district_arr = obj.state;
+      var years_arr = obj.year;
+      var crime = obj.crime_type[obj.crime_type.length - 1];
+      //var crime = obj.crime_type['Total'];
+      var arr = []
+      var i;
+      for (i = 0; i < obj.state.length; i++) {
+        for (j = 0; j < obj.year.length; j++) {
+          var brr = []
+          for (k = 0; k < data.length; k++) {
+            if (data[k].Year == years_arr[j] && data[k].District == district_arr[i]) {
+              brr.push(data[k][crime]);
+            }
+
+          }
+          if (brr.length != 0) {
+            arr.push(brr[0]);
+          }
+        }
+      }
+
+      var series_new = [];
+
+      c = 0
+      for (i = 0; i < district_arr.length; i++) {
+        var element = {}
+        element.values = arr.slice(c, c + years_arr.length);
+        element.year = years_arr;
+        element.text = crime + " cases in " +district_arr[i] ;
+        element.state = district_arr[i];
+        series_new.push(element);
+        c = c + years_arr.length;
+      }
+      var msg = "Bar Chart of "
+      msg+= years_arr
+      console.log("bar-chart file running");
+
+
+
+      ZC.LICENSE = ["569d52cefae586f634c54f86dc99e6a9", "b55b025e438fa8a98e32482b5f768ff5"];
+      var myConfig = {
+        type: "bar",
+        plot: {
+          'value-box': {
+            text: "%v",
+            placement: "top-out",
+            angle: -90,
+            'offset-y': -5,
+          }
+        },
+        
+        title: {
+            "y": "15px",
+            "text": msg,
+            "background-color": "none",
+            "font-color": "#05636c",
+            "font-size": "24px",
+            "height": "25px",
+            "adjust-layout": true
+          },
+        legend:{
+          header: {
+            text: crime + "cases",
+          },
+          'minimize': true,
+          'draggable': true,
+          'drag-handler': "icon",
+          'max-items':5,
+          'overflow': "page",
+        },
+        scaleY: {
+          label: {
+            text: crime+" cases registered"
+          },
+        },
+        scaleX: {
+          label: {
+            text: "Year"
+          },
+          labels: years_arr
+        },
+        tooltip: {
+          "font-family": "Roboto",
+          "font-size": "15px",
+          "text": "There were  %v  %t ",/*on %data-days",*/
+          "text-align": "left",
+        },
+        series:series_new
+      };
+
+      zingchart.render({
+        id: 'myChart',
+        data: myConfig,
+        height: "100%",
+        width: "100%"
+      });
+
+    });
+  </script>
+</body>
+
+</html>
