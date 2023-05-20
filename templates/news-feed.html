@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!--HEADER-FOOTER ELEMENTS-->  
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" constent="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crime Data Analysis</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/neumorphism.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
+    <script src="{{url_for('static',filename='javascript/index.js')}}"></script>
+  
+  
+  
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js" type="text/javascript"></script> 
+    <script src="http://www.skulpt.org/js/skulpt.min.js" type="text/javascript"></script> 
+    <script src="http://www.skulpt.org/js/skulpt-stdlib.js" type="text/javascript"></script> 
+    
+      <!-- header footer script -->
+    <script type="module" src="{{url_for('static',filename='javascript/header-footer.js')}}"></script>
+
+
+  
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+  
+  
+    <script src="https://kit.fontawesome.com/7bdcd846e8.js" crossorigin="anonymous"></script>
+  
+  
+  
+    <script src="https://cdn.lordicon.com/libs/frhvbuzj/lord-icon-2.0.2.js"></script>
+  
+  <!-- live time -->
+  <script>
+    function startTime() {
+      var time = new Date();
+      document.getElementById('txt').innerHTML = time.toLocaleString('en-US', {
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true
+      });
+    }
+  </script>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+</head>
+
+
+<body onload="startTime();"; style=background-color:rgb(204,199,253); ></body>
+<!--date picker-->
+<my-header></my-header>
+
+  <script type="text/javascript">
+    $('.datepicker')[0] && $('.datepicker').each(function () {
+      $('.datepicker').datepicker({
+        disableTouchKeyboard: true,
+        autoclose: false
+      });
+    });
+  </script>
+
+    <div class="container">
+      <form action="/news-feed.html" method="post">
+        <div class="input-group mb-3 pt-3">
+          <input type="text" class="form-control" name="keyword" placeholder="Enter keyword ...." aria-label="Recipient's username" aria-describedby="button-addon2">
+          <button formaction="/news-feed.html" class="btn btn-outline-secondary" type="submit" id="button-addon2">Search</button>
+        </div>
+      </form>
+    </div>
+    {% if all_headlines %}
+      <center><h1>News Articles</h1></center>
+      <div class="row row-cols-1 row-cols-md-2 g-4 mx-3 my-3">
+        {% for headline in all_headlines %}
+          <div class="col">
+            <div class="card h-100">
+              <img src="{{headline['urlToImage']}}" class="card-img-top" alt="...">
+              <div class="card-body">
+                <h3 class="card-title">{{headline['title']}}</h3>
+                <p class="card-text">{{headline['description']}} <a href="{{headline['url']}}" target="blank">Read More...</a></p>
+  
+  
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">{{headline['source']['name']}}</small>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% if all_articles %}
+      <center><h1>Results for '{{keyword}}'</h1></center>
+      <div class="row row-cols-1 row-cols-md-2 g-4 mx-3 my-3">
+        {% for article in all_articles %}
+          <div class="col">
+            <div class="card h-100">
+              <img src="{{article['urlToImage']}}" class="card-img-top" alt="...">
+              <div class="card-body">
+                <h3 class="card-title">{{article['title']}}</h3>
+                <p class="card-text">{{article['description']}} <a href="{{article['url']}}" target="blank">Read More...</a></p>
+  
+  
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">{{article['source']['name']}}</small>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+
+
+<my-footer></my-footer>
+
+</body>
+
+</html>
